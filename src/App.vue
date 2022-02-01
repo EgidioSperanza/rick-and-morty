@@ -2,7 +2,7 @@
   <div id="app">
     <header>
       <h1>Rick and Morty App</h1>
-      <search-bar @search="filterResults" />
+      <search-bar @search="filterResults" @reset="resetResult"/>
     </header>
     <loader v-if="!isLoaded" />
     <main-container v-else :personages="personagesFiltered" />
@@ -39,11 +39,14 @@ export default {
   },
   methods: {
     filterResults(keyword) {
-      // alert(`Ho cercato ${keyword}`)
       this.personagesFiltered = this.personages.filter((personage) =>{
         return personage.name.toLowerCase().includes(keyword);
       })
     },
+    resetResult() {
+      return this.personagesFiltered=this.personages;
+      
+    }
   },
 }
 </script>
