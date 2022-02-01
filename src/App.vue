@@ -1,28 +1,59 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <header>
+      <h1>Rick and Morty App</h1>
+      <search-bar @search="filterResults" />
+    </header>
+    <loader v-if="!isLoaded" />
+    <main-container v-else :personages="personagesFiltered" />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import SearchBar from './components/SearchBar.vue'
+import MainContainer from './components/MainContainer.vue'
+import Loader from './components/Loader.vue'
+import axios from 'axios'
 export default {
   name: 'App',
   components: {
-    HelloWorld
-  }
+    SearchBar,
+    MainContainer,
+    Loader,
+  },
+  data() {
+    return {
+      personages: [],
+      personagesFiltered: [],
+      isLoaded: false,
+    }
+  },
+  mounted() {
+    axios
+      .get('https://api.sampleapis.com/rickandmorty/characters')
+      .then((response) => {
+        this.personages = response.data
+        this.personagesFiltered = response.data
+        this.isLoaded = true
+      })
+  },
+  methods: {
+    filterResults(keyword) {
+      // alert(`Ho cercato ${keyword}`)
+      this.personagesFiltered = this.personages.filter((personage) =>{
+        return personage.name.toLowerCase().includes(keyword);
+      })
+    },
+  },
 }
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import './style/main.scss';
+header {
+  width: 80%;
+  margin: 0 auto;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  padding: 20px 0;
 }
 </style>
